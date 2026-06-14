@@ -119,9 +119,9 @@ npm start
 
 ## Live Demo
 
-After deployment, add your live URL here:
+**https://ecell-commerce.vercel.app**
 
-`https://your-app.onrender.com`
+GitHub: **https://github.com/KanakMalpani/ecell-commerce**
 
 ## AI Prompts
 
