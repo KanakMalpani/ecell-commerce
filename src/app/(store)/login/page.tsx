@@ -74,12 +74,6 @@ function LoginForm() {
             Register
           </Link>
         </p>
-
-        <div className="mt-6 rounded-lg bg-zinc-50 p-4 text-xs text-zinc-500">
-          <p className="font-medium text-zinc-700">Demo accounts:</p>
-          <p className="mt-1">User: user@ecell.com / user123</p>
-          <p>Admin: admin@ecell.com / admin123</p>
-        </div>
       </div>
     </div>
   );

@@ -1,131 +1,115 @@
-# E-Cell Store - E-Commerce Platform
+# E-Cell Store
 
-A full-stack e-commerce platform built for **E-Cell Tech Domain Task 2**. Includes a customer-facing storefront with landing page, product catalog, shopping cart, checkout flow, and a comprehensive admin dashboard.
+Full-stack e-commerce platform for **E-Cell Tech Domain Task 2** — storefront, checkout, order tracking, and admin dashboard.
+
+| | |
+|---|---|
+| **Live demo** | https://ecell-commerce.vercel.app |
+| **Repository** | https://github.com/KanakMalpani/ecell-commerce |
 
 ## Features
 
-### Customer Application
-- Modern landing page with hero, featured products, testimonials, and trust indicators
-- Product listing with search, category filter, price range, and sorting
-- Product detail pages with add-to-cart
-- Shopping cart with quantity management
-- Secure checkout with address management, coupon codes, and simulated payment
-- Order history and order tracking
+**Customer app:** landing page, product catalog with search/filters, cart, checkout (coupons + simulated payment), order history and tracking.
 
-### Admin Dashboard
-- Analytics: revenue, orders, conversion rate, top products, low stock alerts
-- Product management: add, edit, delete, stock tracking, featured products
-- Order management: view orders, update status
-- Coupon management: percentage and fixed discounts with expiry
-- Banner management: promotional campaigns with scheduling
+**Admin panel (`/admin`):** analytics, product CRUD, order management, coupon and banner management.
 
-### Backend
-- JWT authentication with HTTP-only cookies
-- Role-based access control (Admin / User)
-- REST API with Next.js API routes
-- SQLite database via Prisma ORM
+**Backend:** JWT auth (HTTP-only cookies), role-based access (Admin/User), REST APIs, SQLite + Prisma.
 
-## Tech Stack
+## Tech stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 16, React 19, TypeScript |
-| Styling | Tailwind CSS 4 |
-| Backend | Next.js API Routes (Node.js) |
-| Database | SQLite + Prisma |
-| Auth | JWT + bcrypt |
+Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Prisma 7 · SQLite · bcrypt · JWT
 
-## Getting Started
+## Quick start
 
-### Prerequisites
-- Node.js 18+
-- npm
-
-### Installation
+**Requirements:** Node.js 18+, npm
 
 ```bash
+git clone https://github.com/KanakMalpani/ecell-commerce.git
 cd ecell-commerce
+cp .env.example .env
 npm install
-npm run db:setup:local   # first-time local setup only
+npm run db:setup:local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open http://localhost:3000
 
-### Demo Accounts
+### Environment variables
+
+Copy `.env.example` to `.env` and set:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | SQLite path (default `file:./dev.db`) |
+| `JWT_SECRET` | **Required in production.** Use a long random string (32+ chars). Never commit real secrets. |
+
+## Demo access (evaluation only)
+
+These accounts are seeded for reviewers. **Change or remove them before any real deployment.**
 
 | Role | Email | Password |
 |------|-------|----------|
 | Admin | admin@ecell.com | admin123 |
 | User | user@ecell.com | user123 |
 
-### Demo Coupon Codes
-- `WELCOME10` - 10% off (min order ₹500)
-- `FLAT200` - ₹200 off (min order ₹1500)
-- `ECCELL25` - 25% off (min order ₹2000)
+Sample coupon codes: `WELCOME10`, `FLAT200`, `ECCELL25`
 
-## Project Structure
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm start` | Run production server |
+| `npm run db:setup:local` | Migrate + seed (local first run) |
+| `npm run db:setup` | Migrate deploy + seed (CI/production) |
+
+## Project structure
 
 ```
-ecell-commerce/
-├── prisma/
-│   ├── schema.prisma    # Database models
-│   └── seed.ts          # Sample data
-├── src/
-│   ├── app/
-│   │   ├── (store)/     # Customer pages
-│   │   ├── admin/       # Admin dashboard
-│   │   └── api/         # REST API endpoints
-│   ├── components/      # Reusable UI components
-│   ├── context/         # Auth & Cart state
-│   ├── lib/             # Utilities, auth, prisma
-│   └── types/           # TypeScript types
-└── README.md
+src/app/(store)/   Customer pages (shop, cart, checkout, orders)
+src/app/admin/     Admin dashboard
+src/app/api/       REST API routes
+src/components/    UI components
+src/context/       Auth and cart state
+src/lib/           Auth, Prisma, utilities
+prisma/            Schema, migrations, seed data
 ```
 
-## API Endpoints
+## API overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth` | Register |
-| PUT | `/api/auth` | Login |
-| DELETE | `/api/auth` | Logout |
-| GET | `/api/auth/me` | Current user |
-| GET | `/api/products` | List products (with filters) |
-| GET | `/api/products/[slug]` | Product detail |
-| GET | `/api/orders` | List orders |
-| POST | `/api/orders` | Create order (checkout) |
-| POST | `/api/coupons/validate` | Validate coupon |
-| GET | `/api/analytics` | Admin analytics |
+| Method | Endpoint | Access |
+|--------|----------|--------|
+| POST | `/api/auth` | Public (register) |
+| PUT | `/api/auth` | Public (login) |
+| DELETE | `/api/auth` | Authenticated |
+| GET | `/api/products` | Public |
+| POST | `/api/orders` | Authenticated |
+| GET | `/api/analytics` | Admin |
+| GET | `/api/coupons` | Admin |
+
+## Security
+
+- Passwords hashed with bcrypt; JWT stored in HTTP-only cookies
+- Admin routes and mutating APIs enforce role checks server-side
+- `.env` and database files are gitignored; only `.env.example` is tracked
+- Production **requires** `JWT_SECRET` — the app fails to start without it
+- Demo credentials are for evaluation; rotate secrets and passwords for production use
+- Do not commit `.env`, `dev.db`, or Vercel/local config files
 
 ## Deployment
 
-### Option 1: Render (recommended for SQLite)
+**Vercel (current):** https://ecell-commerce.vercel.app
 
-1. Push this repo to GitHub
-2. Create a new **Web Service** on [Render](https://render.com)
-3. Connect the repo — Render reads `render.yaml` automatically
-4. Set `JWT_SECRET` in environment variables
-5. Deploy — SQLite persists on Render's disk
+1. Import the GitHub repo in Vercel
+2. Set `JWT_SECRET` and `DATABASE_URL` in project environment variables
+3. Build command (already in `vercel.json`): `npx prisma migrate deploy && npx tsx prisma/seed.ts && npm run build`
 
-### Option 2: Vercel
+**Render:** `render.yaml` is included for SQLite-friendly hosting with persistent disk.
 
-For Vercel, use a hosted database (Turso/Neon) instead of SQLite. See `.env.example`.
+## AI prompts
 
-```bash
-npm run build
-npm start
-```
-
-## Live Demo
-
-**https://ecell-commerce.vercel.app**
-
-GitHub: **https://github.com/KanakMalpani/ecell-commerce**
-
-## AI Prompts
-
-See [AI_PROMPTS.md](./AI_PROMPTS.md) for the AI prompts used during development.
+See [AI_PROMPTS.md](./AI_PROMPTS.md) for prompts used during development.
 
 ## License
 

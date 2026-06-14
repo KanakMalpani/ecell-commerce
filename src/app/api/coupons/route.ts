@@ -3,8 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
 export async function GET() {
-  const coupons = await prisma.coupon.findMany({ orderBy: { createdAt: "desc" } });
-  return NextResponse.json(coupons);
+  try {
+    await requireAdmin();
+    const coupons = await prisma.coupon.findMany({ orderBy: { createdAt: "desc" } });
+    return NextResponse.json(coupons);
+  } catch {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 }
 
 export async function POST(request: NextRequest) {
