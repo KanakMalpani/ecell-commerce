@@ -46,7 +46,7 @@ A full-stack e-commerce platform built for **E-Cell Tech Domain Task 2**. Includ
 ```bash
 cd ecell-commerce
 npm install
-npm run db:setup:local   # first-time local setup
+npm run db:setup:local   # first-time local setup only
 npm run dev
 ```
 
